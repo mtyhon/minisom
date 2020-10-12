@@ -281,6 +281,7 @@ class MiniSom(object):
 
     def _euclidean_distance(self, x, w):
         print('X Shape: ', x.shape)
+        print('W Shape: ', w.shape)
         print('Output Shape: ', linalg.norm(subtract(x, w), axis=-1).shape)
         return linalg.norm(subtract(x, w), axis=-1)
 
