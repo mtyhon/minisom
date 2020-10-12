@@ -11,6 +11,8 @@ from warnings import warn
 from sys import stdout
 from time import time
 from datetime import timedelta
+from tslearn.cycc import cdist_normalized_cc
+
 import pickle
 import os
 
@@ -145,7 +147,7 @@ class MiniSom(object):
 
         activation_distance : string, optional (default='euclidean')
             Distance used to activate the map.
-            Possible values: 'euclidean', 'cosine', 'manhattan', 'chebyshev'
+            Possible values: 'euclidean', 'cosine', 'manhattan', 'chebyshev', 'kshape'
 
         random_seed : int, optional (default=None)
             Random seed to use.
@@ -202,7 +204,8 @@ class MiniSom(object):
         distance_functions = {'euclidean': self._euclidean_distance,
                               'cosine': self._cosine_distance,
                               'manhattan': self._manhattan_distance,
-                              'chebyshev': self._chebyshev_distance}
+                              'chebyshev': self._chebyshev_distance,
+                             'kshape': self._kshape_distance}
 
         if activation_distance not in distance_functions:
             msg = '%s not supported. Distances available: %s'
@@ -280,10 +283,22 @@ class MiniSom(object):
         return 1 - num / (denum+1e-8)
 
     def _euclidean_distance(self, x, w):
-        print('X Shape: ', x.shape)
-        print('W Shape: ', w.shape)
-        print('Output Shape: ', linalg.norm(subtract(x, w), axis=-1).shape)
         return linalg.norm(subtract(x, w), axis=-1)
+      
+    def norm_cross_dists(x1, x2):
+        norms1 = np.linalg.norm(x1,axis=(1, 2))
+        norms2 = np.linalg.norm(x2,axis=(1, 2))
+        return 1. - cdist_normalized_cc(x1, x2,
+                                        norms1=norms1,
+                                        norms2=norms2,
+                                        self_similarity=False)
+      
+    def _kshape_distance(self, x, w):
+        output = np.zeros((w.shape[0], w.shape[1]))
+        for i in range(w.shape[0]):
+          for j in range(w.shape[1]):
+            output[i,j] = norm_cross_dists(x.reshape(1,-1,1), w[i,j,:].reshape(1,-1,1))     
+        return output
 
     def _manhattan_distance(self, x, w):
         return linalg.norm(subtract(x, w), ord=1, axis=-1)
