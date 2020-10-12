@@ -3,7 +3,7 @@ from math import sqrt
 from numpy import (array, unravel_index, nditer, linalg, random, subtract, max,
                    power, exp, pi, zeros, ones, arange, outer, meshgrid, dot,
                    logical_and, mean, std, cov, argsort, linspace, transpose,
-                   einsum, prod, nan, sqrt, hstack, diff, argmin, multiply)
+                   einsum, prod, nan, sqrt, hstack, diff, argmin, multiply, zeros)
 from numpy import sum as npsum
 from numpy.linalg import norm
 from collections import defaultdict, Counter
