@@ -286,15 +286,15 @@ class MiniSom(object):
         return linalg.norm(subtract(x, w), axis=-1)
       
     def norm_cross_dists(x1, x2):
-        norms1 = np.linalg.norm(x1,axis=(1, 2))
-        norms2 = np.linalg.norm(x2,axis=(1, 2))
+        norms1 = linalg.norm(x1,axis=(1, 2))
+        norms2 = linalg.norm(x2,axis=(1, 2))
         return 1. - cdist_normalized_cc(x1, x2,
                                         norms1=norms1,
                                         norms2=norms2,
                                         self_similarity=False)
       
     def _kshape_distance(self, x, w):
-        output = np.zeros((w.shape[0], w.shape[1]))
+        output = zeros((w.shape[0], w.shape[1]))
         for i in range(w.shape[0]):
           for j in range(w.shape[1]):
             output[i,j] = norm_cross_dists(x.reshape(1,-1,1), w[i,j,:].reshape(1,-1,1))     
