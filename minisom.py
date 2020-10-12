@@ -285,7 +285,7 @@ class MiniSom(object):
     def _euclidean_distance(self, x, w):
         return linalg.norm(subtract(x, w), axis=-1)
       
-    def norm_cross_dists(x1, x2):
+    def _norm_cross_dists(self, x1, x2):
         norms1 = linalg.norm(x1,axis=(1, 2))
         norms2 = linalg.norm(x2,axis=(1, 2))
         return 1. - cdist_normalized_cc(x1, x2,
@@ -297,7 +297,7 @@ class MiniSom(object):
         output = zeros((w.shape[0], w.shape[1]))
         for i in range(w.shape[0]):
           for j in range(w.shape[1]):
-            output[i,j] = norm_cross_dists(x.reshape(1,-1,1), w[i,j,:].reshape(1,-1,1))     
+            output[i,j] = self._norm_cross_dists(x.reshape(1,-1,1), w[i,j,:].reshape(1,-1,1))     
         return output
 
     def _manhattan_distance(self, x, w):
